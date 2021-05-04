@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const postModel = require('../models/posts');
 
 const getPosts = async (req,res)=>{
@@ -25,12 +26,37 @@ const createPost = async (req,res)=>{
 }
 
 const updatePost = async(req,res)=>{
-    const {id:_id} = req.params;
-    const postData = req.body;
+    const {id: _id} = req.params;
+    const postData = req.body; 
+    
     if(!mongoose.Types.ObjectId.isValid(_id)) 
         return res.status(404).send('No post with that id!');
-    const updatedPost = await postMessages.findByIdAndUpdate(_id,postData,{new:true});
+
+    const updatedPost = await postModel.findByIdAndUpdate(_id,{ ...post, _id },{new:true});
+
     res.json(updatedPost);
+
+}
+
+const deletePost = async(req,res)=>{
+    const { id } = req.params;
+
+    if(!mongoose.Types.ObjectId.isValid(id)) 
+        return res.status(404).send('No post with that id!');
+
+    await postModel.findByIdAndRemove(id);
+    //console.log('DELETE');
+    res.json('Post deleted Successfully!');
+}
+
+const likePost = async(req,res)=>{
+    const { id } = req.params;
+
+    if(!mongoose.Types.ObjectId.isValid(id)) 
+        return res.status(404).send('No post with that id!');
+    const post = await postModel.findById(id);
+    const updatedPost = await postModel.findByIdAndUpdate(id,{likeCount : post.likeCount + 1},{new:true})
+    res.json('Updated Post!');
 
 }
 
@@ -38,4 +64,6 @@ module.exports={
     getPosts,
     createPost,
     updatePost,
+    deletePost,
+    likePost,
 }

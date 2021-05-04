@@ -1,4 +1,4 @@
-import React,{useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { Container, AppBar, Typography, Grow, Grid} from '@material-ui/core'
 import { useDispatch } from 'react-redux';
 
@@ -9,13 +9,13 @@ import Form from './components/form/form'
 import useStyles from './styles';
 
 const App =()=>{
-    const [currentId,setCurrentId] = useState(null);
+    const [currentId,setCurrentId] = useState(0);
     const classes = useStyles();
     const dispatch = useDispatch();
      
     useEffect(() => {
         dispatch(getPosts()); 
-    }, [dispatch])
+    }, [currentId,dispatch])
 
     return(
         <Container maxwidth="lg">
