@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container,} from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
@@ -7,9 +8,11 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import { Auth } from './components/Auth/Auth';
+import theme from './theme';
 
 const App = () => {
   return (
+    <ThemeProvider theme={theme}>
     <BrowserRouter>
       <Container maxWidth="lg">
       <Navbar />
@@ -19,7 +22,9 @@ const App = () => {
       </Switch>
       </Container>
     </BrowserRouter>
+    </ThemeProvider>
   );
 };
+
 
 export default App;

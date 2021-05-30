@@ -1,50 +1,58 @@
 import {React, useState} from 'react'
-import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@material-ui/core';
-import { GoogleLogin } from 'react-google-login';
-import {useHistory} from 'react-router-dom'
 import { useDispatch } from 'react-redux';
+import { Avatar, Button, Paper, Grid, Typography, Container,} from '@material-ui/core';
+import {useHistory} from 'react-router-dom'
+import { GoogleLogin } from 'react-google-login';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
 import useStyles from "./styles";
 import Input from './input';
 import Icon from './icon';
 import {signin, signup} from '../../actions/auth';
+import { AUTH } from '../../constants/actionTypes';
 
 
 const initialState = {firstName:'',lastName:'',email:'',password:'',confirmPassword:''}
 export const Auth = () => {
-    const classes = useStyles();
-    const [showPassword, setShowPassword] = useState(false);
+    
+    const [form, setForm] = useState(initialState);
     const [isSignup, setIsSignup] = useState(false);
-    const [formData, setFormData] = useState(initialState);
     const dispatch = useDispatch();  
     const history = useHistory();
+    const classes = useStyles();
+
+    const [showPassword, setShowPassword] = useState(false);
     const handleShowPassword = ()=>{
-        setShowPassword((prevShowPassword)=> !prevShowPassword)
+        setShowPassword(!showPassword);
     }
-    const handleSubmit = (e)=>{
-        e.preventDefault();
-        if(isSignup){
-            dispatch(signup(formData, history))
-        }
-        else{
-             dispatch(signin(formData, history))
-        
-        }
-        console.log(formData);
-    };
-    const handleChange=(e)=>{
-        setFormData({...formData, [e.target.name]:e.target.value})
-    };
 
     const switchMode=()=>{
+        setForm(initialState);
         setIsSignup((prevIsSignup)=> !prevIsSignup);
         handleShowPassword(false);
     }
+    const handleSubmit = (e)=>{
+        e.preventDefault();
+
+        if(isSignup){
+            dispatch(signup(form, history));
+        }
+        else{
+            dispatch(signin(form, history));
+        
+        }
+        console.log(form);
+    };
+    const handleChange=(e)=>{
+        setForm({...form, [e.target.name]:e.target.value})
+    };
+
+
     const googleSuccess = async (res)=>{
         const result = res?.profileObj;
         const token = res?.tokenId;
         try {
-            dispatch({type:'AUTH', data:{result, token}})
+            dispatch({type:AUTH, data:{result, token}})
 
             history.push('/')
         } catch (error) {
